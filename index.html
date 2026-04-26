@@ -9,8 +9,6 @@
 body{
     font-family: Arial;
     margin:0;
-
-    /* BACKGROUND GRADIENT + AKSEN */
     background: linear-gradient(135deg, #FFF4E6, #FDEBD0);
     background-image: 
         radial-gradient(circle at 20% 20%, rgba(47,79,111,0.08) 0%, transparent 40%),
@@ -18,7 +16,6 @@ body{
         radial-gradient(circle at 50% 80%, rgba(47,79,111,0.08) 0%, transparent 40%);
 }
 
-/* HEADER */
 header{
     background: linear-gradient(90deg, #1E3A5F, #2F4F6F);
     color:white;
@@ -26,24 +23,20 @@ header{
     padding:20px;
 }
 
-/* CONTAINER */
 .container{
     display:flex;
     justify-content:center;
     padding:30px;
 }
 
-/* CARD */
 .card{
     background:white;
     width:420px;
     padding:25px;
     border-radius:15px;
     box-shadow:0 10px 25px rgba(0,0,0,0.15);
-    backdrop-filter: blur(5px);
 }
 
-/* INPUT */
 select,input{
     width:100%;
     padding:10px;
@@ -52,7 +45,6 @@ select,input{
     border:1px solid #ccc;
 }
 
-/* BUTTON */
 button{
     width:100%;
     padding:12px;
@@ -68,7 +60,6 @@ button:hover{
     background:#1E3A5F;
 }
 
-/* OUTPUT */
 #output{
     margin-top:15px;
     background:#FDEBD0;
@@ -76,7 +67,6 @@ button:hover{
     border-radius:10px;
 }
 
-/* INFO */
 .info{
     margin-top:20px;
     font-size:14px;
@@ -157,7 +147,6 @@ Lihat di Google Maps
 let keranjang=[];
 let total=0;
 
-/* MENU DINAMIS */
 function updateMenu(){
     let kategori=document.getElementById("kategori").value;
     let produk=document.getElementById("produk");
@@ -178,39 +167,22 @@ function updateMenu(){
 }
 updateMenu();
 
-/* TOGGLE BUKTI */
 function toggleBukti(){
     let metode=document.getElementById("pembayaran").value;
-    let buktiDiv=document.getElementById("buktiDiv");
-
-    if(metode==="transfer"){
-        buktiDiv.style.display="block";
-    }else{
-        buktiDiv.style.display="none";
-    }
+    document.getElementById("buktiDiv").style.display =
+        metode==="transfer" ? "block" : "none";
 }
 
-/* TAMBAH KERANJANG */
 function tambah(){
     let produk=document.getElementById("produk").value;
     let jumlah=parseInt(document.getElementById("jumlah").value);
 
-    let namaProduk="";
-    let harga=0;
+    let namaProduk="", harga=0;
 
-    if(produk==="frozen_eceran"){
-        namaProduk="Sala Frozen Eceran";
-        harga=200;
-    }else if(produk==="goreng_eceran"){
-        namaProduk="Sala Goreng Eceran";
-        harga=500;
-    }else if(produk==="frozen_22"){
-        namaProduk="Sala Frozen Isi 22";
-        harga=7000;
-    }else if(produk==="frozen_42"){
-        namaProduk="Sala Frozen Isi 42";
-        harga=15000;
-    }
+    if(produk==="frozen_eceran"){ namaProduk="Sala Frozen Eceran"; harga=200; }
+    else if(produk==="goreng_eceran"){ namaProduk="Sala Goreng Eceran"; harga=500; }
+    else if(produk==="frozen_22"){ namaProduk="Sala Frozen Isi 22"; harga=7000; }
+    else if(produk==="frozen_42"){ namaProduk="Sala Frozen Isi 42"; harga=15000; }
 
     let subtotal=harga*jumlah;
 
@@ -220,7 +192,6 @@ function tambah(){
     alert("Produk masuk ke keranjang!");
 }
 
-/* CHECKOUT */
 function checkout(){
     if(keranjang.length===0){
         alert("Keranjang kosong!");
@@ -231,29 +202,29 @@ function checkout(){
     let alamat=document.getElementById("alamat").value;
     let hp=document.getElementById("hp").value;
     let metode=document.getElementById("pembayaran").value;
-    let bukti=document.getElementById("bukti").value;
 
+    // TAMPIL DI WEB
     let output=document.getElementById("output");
-
     let isi=`<h3>Pesanan Berhasil</h3>`;
-    isi+=`<b>Nama:</b> ${nama}<br>`;
-    isi+=`<b>Alamat:</b> ${alamat}<br>`;
-    isi+=`<b>No HP:</b> ${hp}<br>`;
-    isi+=`<b>Pembayaran:</b> ${metode}<br>`;
-
-    if(metode==="transfer"){
-        isi+=`<b>Bukti:</b> ${bukti ? "Sudah upload" : "Belum upload"}<br>`;
-    }
-
-    isi+=`<hr>`;
-
+    isi+=`Nama: ${nama}<br>Alamat: ${alamat}<br>HP: ${hp}<br>Pembayaran: ${metode}<br><hr>`;
     keranjang.forEach(item=>{
         isi+=`${item.namaProduk} x ${item.jumlah} = Rp ${item.subtotal.toLocaleString()}<br>`;
     });
-
     isi+=`<hr><b>Total: Rp ${total.toLocaleString()}</b>`;
-
     output.innerHTML=isi;
+
+    // KIRIM KE WHATSAPP
+    let pesan=`Pesanan Sala Lauak Kito%0A`;
+    pesan+=`Nama: ${nama}%0AAlamat: ${alamat}%0AHP: ${hp}%0A`;
+    pesan+=`Pembayaran: ${metode}%0A%0A`;
+
+    keranjang.forEach(item=>{
+        pesan+=`${item.namaProduk} x ${item.jumlah}%0A`;
+    });
+
+    pesan+=`%0ATotal: Rp ${total}`;
+
+    window.open(`https://wa.me/6281374548841?text=${pesan}`);
 }
 </script>
 
